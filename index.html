@@ -140,6 +140,20 @@
   .modal-close{border:none;background:none;font-size:26px;cursor:pointer;color:#fff;line-height:1}
   .modal-body{overflow:auto}
   .modal-body img{width:100%;display:block}
+  /* ====== Tipo de producto / listas ====== */
+  .tipo-row{display:grid;grid-template-columns:1fr 1.3fr;gap:14px;align-items:stretch}
+  @media (max-width:600px){.tipo-row{grid-template-columns:1fr}}
+  .tipo-info{background:var(--orange-soft);border-left:4px solid var(--orange);border-radius:10px;padding:9px 14px;font-size:13.5px;line-height:1.45}
+  .tipo-info strong{display:block;color:var(--orange);font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+  .sub-title{display:block;font-weight:700;margin-bottom:10px}
+  .list-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:12px}
+  .list-grid.two{grid-template-columns:1fr 1fr}
+  @media (max-width:600px){.list-grid.two{grid-template-columns:1fr}}
+  .list-item label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+  .list-item .in{display:flex;gap:8px}
+  .list-item .in .icon-btn{flex-shrink:0}
+  .field.invalid .list-item input:placeholder-shown{border-color:var(--error)}
+
   /* ====== Productos repetibles ====== */
   .remove-product{margin-left:auto;border:1.5px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;
                   padding:4px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
@@ -182,7 +196,7 @@
         </div>
       </div>
       <div class="consider-item">
-        <span class="tag">2 · Tours, servicios, transportes, merch, A&amp;B, amenities y comisiones</span>
+        <span class="tag">2 · Tours, servicios, transportes, merch, amenities y comisiones</span>
         <p>Confirma previamente con la Líder de Impuestos (<strong>Verónica Silva</strong>) si el producto requiere impuesto, ya que este formulario te pedirá especificarlo.</p>
       </div>
     </div>
@@ -319,7 +333,21 @@
     </div>
 
     <div class="field" data-req>
-      <label for="abCategoria__K__">2) Categoría del producto <span class="req">*</span></label>
+      <label for="abTipo__K__">2) Tipo de producto <span class="req">*</span></label>
+      <div class="tipo-row">
+        <select id="abTipo__K__" data-f="tipo">
+          <option value="">Selecciona el tipo…</option>
+          <option>Producto sin modificadores</option>
+          <option>Combo</option>
+          <option>Producto con modificadores</option>
+        </select>
+        <div class="tipo-info hidden"></div>
+      </div>
+      <div class="err">Selecciona el tipo de producto.</div>
+    </div>
+
+    <div class="field" data-req>
+      <label for="abCategoria__K__">3) Categoría del producto <span class="req">*</span></label>
       <select id="abCategoria__K__" data-f="categoria">
         <option value="">Selecciona la categoría…</option>
         <option>Bebidas calientes</option><option>Bebidas frías</option><option>Cervezas</option>
@@ -335,22 +363,40 @@
       <div class="err">Indica la categoría.</div>
     </div>
 
+    <div class="field hidden" data-req data-kind="list" data-wrap="combo">
+      <div class="sub">
+        <span class="label sub-title">Componentes del combo <span class="req">*</span></span>
+        <div class="list-grid two" data-list="combo"></div>
+        <button type="button" class="add-btn" data-add="combo">+ Agregar producto</button>
+        <div class="err">Completa todos los productos del combo (mínimo A y B) o quita los espacios vacíos.</div>
+      </div>
+    </div>
+
+    <div class="field hidden" data-req data-kind="list" data-wrap="mods">
+      <div class="sub">
+        <span class="label sub-title">Modificadores <span class="req">*</span></span>
+        <div class="list-grid" data-list="mods"></div>
+        <button type="button" class="add-btn" data-add="mods">+ Agregar modificador</button>
+        <div class="err">Escribe los modificadores (o quita los espacios vacíos).</div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="field" data-req>
-        <label for="abPrecio__K__">3) Precio de venta – con impuestos <span class="req">*</span></label>
+        <label for="abPrecio__K__">4) Precio de venta – con impuestos <span class="req">*</span></label>
         <div class="affix pre"><span>$</span><input type="text" id="abPrecio__K__" data-f="precio" inputmode="numeric" class="money" placeholder="0"></div>
         <div class="help">Valor en pesos colombianos (COP).</div>
         <div class="err">Ingresa el precio de venta.</div>
       </div>
       <div class="field" data-req data-kind="pct">
-        <label for="abFoodCost__K__">4) % de food cost indicado por la Gerencia de A&amp;B <span class="req">*</span></label>
+        <label for="abFoodCost__K__">5) % de food cost indicado por la Gerencia de A&amp;B <span class="req">*</span></label>
         <div class="affix suf"><input type="number" id="abFoodCost__K__" data-f="foodcost" min="0" max="100" step="0.1" placeholder="0"><span>%</span></div>
         <div class="err">Ingresa un porcentaje entre 0 y 100.</div>
       </div>
     </div>
 
     <div class="field" data-req data-check="rc__K__">
-      <span class="label">5) ¿En qué revenue center se necesita el botón? <span class="req">*</span></span>
+      <span class="label">6) ¿En qué revenue center se necesita el botón? <span class="req">*</span></span>
       <p class="help" style="margin:0 0 8px">Puedes seleccionar varios.</p>
       <div class="choices rc-choices" data-name="rc__K__"></div>
       <div class="err">Selecciona al menos un revenue center.</div>
@@ -441,6 +487,15 @@ const CONFIG = {
 const $ = id => document.getElementById(id);
 const REVENUE_CENTERS = ['Bar','Recepción','Restaurante','Spa'];
 const RECLAS_AREAS = ['A&B','Alojamiento','Experiencias','Otro'];
+const TIPO_INFO = {
+  'Producto sin modificadores': 'Productos únicos que no requieren cambios. Ej. Hamburguesa, Coca Cola, Cerveza Poker',
+  'Combo': 'Es un paquete de varios productos que se venden juntos. Ej. Hamburguesa + Gaseosa',
+  'Producto con modificadores': 'Productos que permitan cambios en su composición. Ej. Huevos al gusto - se pueden escoger entre: fritos, revueltos, con queso o con cebolla y tomate'
+};
+const LISTS = {
+  combo: { min: 2, label: i => 'Producto ' + String.fromCharCode(65 + i), ph: i => i === 0 ? 'Ej.: Hamburguesa' : (i === 1 ? 'Ej.: Gaseosa' : 'Nombre del producto') },
+  mods:  { min: 2, label: i => 'Modificador ' + (i + 1), ph: i => ['Ej.: Fritos','Ej.: Revueltos','Ej.: Con queso','Ej.: Con cebolla y tomate'][i] || 'Escribe el modificador' }
+};
 
 $('newProductLink').href = CONFIG.NEW_PRODUCT_FORM_URL;
 
@@ -497,6 +552,18 @@ function createProduct(){
   if (mode === 'ab'){
     const cat = q(block,'categoria');
     cat.onchange = () => show(block.querySelector('[data-wrap=catOtro]'), cat.value === 'Otros');
+    const tipo = q(block,'tipo');
+    tipo.onchange = () => {
+      const info = block.querySelector('.tipo-info');
+      info.innerHTML = tipo.value ? `<strong>${tipo.value}</strong>${TIPO_INFO[tipo.value]}` : '';
+      show(info, !!tipo.value);
+      show(block.querySelector('[data-wrap=combo]'), tipo.value === 'Combo');
+      show(block.querySelector('[data-wrap=mods]'), tipo.value === 'Producto con modificadores');
+    };
+    ['combo','mods'].forEach(k => {
+      for (let i = 0; i < LISTS[k].min; i++) addListItem(block, k);
+      block.querySelector(`[data-add=${k}]`).onclick = () => { const inp = addListItem(block, k); inp.focus(); };
+    });
   } else {
     block.querySelectorAll('.chip').forEach(c => c.onclick = () => { q(block,'impuesto').value = c.dataset.tax; });
     block.querySelector('.add-reclas').onclick = () => addReclasRow(block);
@@ -552,6 +619,27 @@ function refreshArea(){
 $('area').addEventListener('change', refreshArea);
 $('areaOtro').addEventListener('input', refreshProducts);
 
+/* ================== LISTAS: componentes del combo / modificadores ================== */
+function addListItem(block, kind){
+  const box = block.querySelector(`[data-list=${kind}]`);
+  const div = document.createElement('div');
+  div.className = 'list-item';
+  div.innerHTML = `<label></label><div class="in"><input type="text"><button type="button" class="icon-btn" title="Eliminar">×</button></div>`;
+  box.appendChild(div);
+  div.querySelector('.icon-btn').onclick = () => { div.remove(); renumberList(block, kind); };
+  renumberList(block, kind);
+  return div.querySelector('input');
+}
+function renumberList(block, kind){
+  const cfg = LISTS[kind];
+  [...block.querySelectorAll(`[data-list=${kind}] .list-item`)].forEach((it, i) => {
+    it.querySelector('label').textContent = cfg.label(i) + ' *';
+    it.querySelector('input').placeholder = cfg.ph(i);
+    it.querySelector('.icon-btn').classList.toggle('hidden', i < cfg.min);
+  });
+}
+const listValues = (block, kind) => [...block.querySelectorAll(`[data-list=${kind}] input`)].map(i => i.value.trim());
+
 /* ================== RECLASIFICACIÓN (por producto) ================== */
 function addReclasRow(block){
   const rowsBox = block.querySelector('.reclas-rows');
@@ -596,6 +684,10 @@ function updateSummary(block){
 }
 
 /* ================== VALIDACIÓN ================== */
+// Quita la marca roja de un campo en cuanto se corrige
+['input','change'].forEach(ev => $('form').addEventListener(ev, e => {
+  const f = e.target.closest('.field.invalid'); if (f) f.classList.remove('invalid');
+}));
 function visible(el){ return !el.closest('.hidden'); }
 function validate(){
   let ok = true, first = null;
@@ -604,6 +696,10 @@ function validate(){
     let valid = true;
     if (f.dataset.radio) valid = !!document.querySelector(`input[name="${f.dataset.radio}"]:checked`);
     else if (f.dataset.check) valid = !!document.querySelector(`input[name="${f.dataset.check}"]:checked`);
+    else if (f.dataset.kind === 'list'){
+      const vals = [...f.querySelectorAll('.list-grid input')].map(i => i.value.trim());
+      valid = vals.length >= 2 && vals.every(v => v !== '');
+    }
     else if (f.dataset.kind === 'price-tax'){
       const tax = f.querySelector('[data-f=impuesto]').value;
       valid = toNum(f.querySelector('[data-f=precio]').value) > 0 && tax !== '' && +tax >= 0 && +tax <= 100;
@@ -659,7 +755,14 @@ function buildPayload(){
       const cat = q(b,'categoria').value === 'Otros' ? `Otros: ${q(b,'catOtro').value.trim()}` : q(b,'categoria').value;
       campos.push(
         [S2,'Nombre del producto',q(b,'nombre').value.trim()],
-        [S2,'Categoría del producto',cat],
+        [S2,'Tipo de producto',q(b,'tipo').value],
+        [S2,'Categoría del producto',cat]
+      );
+      if (q(b,'tipo').value === 'Combo')
+        listValues(b,'combo').forEach((v,j) => campos.push([S2,`Componente del combo – ${LISTS.combo.label(j)}`, v]));
+      if (q(b,'tipo').value === 'Producto con modificadores')
+        listValues(b,'mods').forEach((v,j) => campos.push([S2,LISTS.mods.label(j), v]));
+      campos.push(
         [S2,'Precio de venta con impuestos (COP)',money(toNum(q(b,'precio').value))],
         [S2,'% Food cost (Gerencia A&B)',q(b,'foodcost').value + ' %'],
         [S2,'Revenue center(s)',checks(b)]
